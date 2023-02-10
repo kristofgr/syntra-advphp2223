@@ -1,3 +1,7 @@
+<?php
+    echo Date('H:i:s');
+?>
+
 <!DOCTYPE html>
 <html>
 

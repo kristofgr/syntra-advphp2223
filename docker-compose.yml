@@ -21,10 +21,13 @@ services:
       - db
 
   db:
-    image: mysql:latest
+    image: mysql:8.0
     ports:
       - 3306:3306
+    expose:
+      - 3306
     volumes:
+      - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       - ./db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpass

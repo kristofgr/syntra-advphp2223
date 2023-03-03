@@ -2,51 +2,60 @@
 require "includes/Db.class.php";
 require "includes/Track.class.php";
 
-
+// Get current query string
 parse_str($_SERVER["QUERY_STRING"], $args);
+
 $args['qsparts'] = explode('/', $args['qs']);
+
+$response = new StdClass;
 
 switch ($args['qsparts'][1]) {
   case 'tracks':
     $db = new Db();
     $track = new Track($db);
-    $page = 1;
     $limit = 50;
-    $total = $track->getTotal()[0]->total;
-    $pages = ceil($total / $limit);
-    if (isset($args['page']) && (is_numeric($args['page'])) && ($args['page'] <= $pages) && ($args['page'] > 0)) {
-      $page = (int)$args['page'];
+
+    $filters = [];
+
+    if (isset($args['genre'])) {
+        $filters['genre'] = $args['genre'];
     }
-    $return = (object)[
-      'page' => $page,
-      'total' => $total,
-      'pages' => $pages,
-      // 'next_page_url' => 
-      'results' => $track->getAll(($page - 1) * $limit, $limit)
-    ];
-    
-    if ($page < $pages) {
-      $return->next_page_url= 'http://localhost/230217/index.php?page=' . $page + 1;
+
+    if (isset($args['artist_name'])) {
+      $filters['artist_name'] = $args['artist_name'];
     }
-    if ($page > 1) {
-      $return->previous_page_url= 'http://localhost/230217/index.php?page=' . $page - 1;
+
+    $response->page = 1;
+    $response->total_items = $track->getTotal($filters);
+    $response->total_pages = ceil($response->total_items / $limit);
+
+    if (isset($args['page']) && 
+      (is_numeric($args['page'])) && 
+      ($args['page'] <= $response->total_pages) && 
+      ($args['page'] > 0)) {
+        $response->page = (int)$args['page'];
     }
-    header('Content-Type: application/json; charset=utf-8');
-    print json_encode($return);
+
+    $response->results = $track->getAll(($response->page - 1) * $limit, $limit, $filters);
+
+    if ($response->page < $response->total_pages) {
+      $filters['page'] = $response->page + 1;
+      $response->next_page_url= 'http://localhost/230217/api/v1/tracks?' . http_build_query($filters);
+    }
+
+    if ($response->page > 1) {
+      $filters['page'] = $response->page - 1;
+      $response->previous_page_url= 'http://localhost/230217/index.php?page=' . http_build_query($filters);
+    }
+
     break;
   
   default:
-    # code...
+    $response->error = "This is not a valid endpoint.";
     break;
 }
 
 
-
-// print '<pre>';
-// print_r($args);
-
-// // parse_str( parse_url( $_SERVER["QUERY_STRING"], PHP_URL_QUERY), $array );
-// // print_r( $array );
-
-
-// exit;
+header('Content-Type: application/json; charset=utf-8');
+print json_encode($response);
+exit;

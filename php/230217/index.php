@@ -8,7 +8,7 @@ $track = new Track($db);
 
 $page = 1;
 $limit = 50;
-$total = $track->getTotal()[0]->total;
+$total = $track->getTotal();
 $pages = ceil($total / $limit);
 
 

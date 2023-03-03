@@ -6,14 +6,33 @@ require "includes/Track.class.php";
 $db = new Db();
 $track = new Track($db);
 
+$page = 1;
+$limit = 50;
+$total = $track->getTotal()[0]->total;
+$pages = ceil($total / $limit);
 
-// $tracks = Db::getTracks();
-// $tracks = $db->getTracks();
+
+if (isset($_GET['page']) && (is_numeric($_GET['page'])) && ($_GET['page'] <= $pages) && ($_GET['page'] > 0)) {
+  $page = (int)$_GET['page'];
+}
+
 
 $return = (object)[
-  'page' => 1,
-  'results' => $track->getAll()
+  'page' => $page,
+  'total' => $total,
+  'pages' => $pages,
+  // 'next_page_url' => 
+  'results' => $track->getAll(($page - 1) * $limit, $limit)
 ];
+
+if ($page < $pages) {
+  $return->next_page_url= 'http://localhost/230217/index.php?page=' . $page + 1;
+}
+if ($page > 1) {
+  $return->previous_page_url= 'http://localhost/230217/index.php?page=' . $page - 1;
+}
+
+
 
 // print "<pre>";
 // var_dump($return);

@@ -3,34 +3,32 @@
 Class Db {
 
     // Database configuration
-    private static $host = 'db';
-    private static $dbname = 'syntrafs';
-    private static $username = 'root';
-    private static $password = 'rootpass';
-    private static $port = 3306;
-    private static $pdo;
+    private $host = 'db';
+    private $dbname = 'syntrafs';
+    private $username = 'root';
+    private $password = 'rootpass';
+    private $port = 3306;
+    private $pdo;
 
   // Create a new PDO instance
-  public static function connect()
+  public function __construct()
   {
-      if (self::$pdo === null) {
+      if ($this->pdo === null) {
           try {
-              self::$pdo = new PDO("mysql:host=" . self::$host . ";port=" . self::$port . ";dbname=" . self::$dbname . ";charset=utf8mb4", self::$username, self::$password);
+              $this->pdo = new PDO(
+                "mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->dbname . ";charset=utf8mb4", 
+                $this->username, 
+                $this->password);
           } catch (PDOException $e) {
               echo "Connection failed: " . $e->getMessage();
               return null;
           }
       }
-
-      return self::$pdo;
   }
 
-  public static function getTracks()
-  {
-      $pdo = self::connect();
-      $stmt = $pdo->prepare("SELECT * FROM 230217_tracks LIMIT 10");
-      $stmt->execute();
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  public function executeQuery($sql, $fetch = PDO::FETCH_OBJ) {
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute();
+    return $stmt->fetchAll($fetch);
   }
-
 }

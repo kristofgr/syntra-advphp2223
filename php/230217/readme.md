@@ -3,12 +3,14 @@ het moet OOP zijn...
 - class track
 
 
-/230217/api/v1/track/id
+http://localhost:80/230217/api/v1/track/id
   - data 
     - alles
 
 
-/230217/api/v1/tracks
+
+http://localhost:80/230217/api/v1/tracks
+
 -> json -> returnt 50 resultaten
   - total_pages
   - next_page_url
@@ -17,8 +19,8 @@ het moet OOP zijn...
     - track_id
     - artist_name
     - genre
+    
 -> filteren via querystring
-  - track_id
   - genre
   - artist_name
 

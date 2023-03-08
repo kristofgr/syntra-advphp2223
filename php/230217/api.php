@@ -2,9 +2,7 @@
 require "includes/Db.class.php";
 require "includes/Track.class.php";
 
-// Get current query string
-parse_str($_SERVER["QUERY_STRING"], $args);
-
+$args = $_REQUEST;
 $args['qsparts'] = explode('/', $args['qs']);
 
 $response = new StdClass;

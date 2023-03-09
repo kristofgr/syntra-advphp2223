@@ -49,6 +49,7 @@ switch ($args['qsparts'][1]) {
     break;
   
   default:
+    http_response_code(404);
     $response->error = "This is not a valid endpoint.";
     break;
 }

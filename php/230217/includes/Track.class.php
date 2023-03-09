@@ -22,6 +22,12 @@ Class Track {
     $sql = "SELECT id, track_id, track_name, artist_name, genre FROM 230217_tracks $where LIMIT $limit OFFSET $offset";
     return $this->db->executeQuery($sql, $filters);
   }
+  
+
+  public function getById($id) {
+    $sql = "SELECT * FROM 230217_tracks WHERE id=:id";
+    return $this->db->executeQuery($sql, ['id' => $id]);
+  }
 
 
   private function buildWhere($filters) {

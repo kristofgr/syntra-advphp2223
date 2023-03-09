@@ -5,6 +5,11 @@ require "includes/Track.class.php";
 $args = $_REQUEST;
 $args['qsparts'] = explode('/', $args['qs']);
 
+
+// print '<pre>';
+// print_r($args);
+// exit;
+
 $response = new StdClass;
 
 switch ($args['qsparts'][1]) {
@@ -46,6 +51,13 @@ switch ($args['qsparts'][1]) {
       $response->previous_page_url= 'http://localhost/230217/index.php?page=' . http_build_query($filters);
     }
 
+    break;
+
+  case 'track': 
+    $db = new Db();
+    $track = new Track($db);
+    
+    $response->result = $track->getById($args['qsparts'][2]);
     break;
   
   default:

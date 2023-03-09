@@ -3,7 +3,7 @@ het moet OOP zijn...
 - class track
 
 
-http://localhost:80/230217/api/v1/track/id
+http://localhost:80/230217/api/v1/track/[id]
   - data 
     - alles
 
@@ -23,7 +23,7 @@ http://localhost:80/230217/api/v1/tracks
     - genre
     
 -> filteren via querystring
-  - page
+  <!-- - page -->
   - genre
   - artist_name
 

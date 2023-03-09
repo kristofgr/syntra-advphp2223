@@ -5,7 +5,6 @@ require "includes/Track.class.php";
 $args = $_REQUEST;
 $args['qsparts'] = explode('/', $args['qs']);
 
-
 // print '<pre>';
 // print_r($args);
 // exit;
@@ -54,10 +53,14 @@ switch ($args['qsparts'][1]) {
     break;
 
   case 'track': 
-    $db = new Db();
-    $track = new Track($db);
-    
-    $response->result = $track->getById($args['qsparts'][2]);
+    if (isset($args['qsparts'][2]) && !empty($args['qsparts'][2])) {
+      $db = new Db();
+      $track = new Track($db);
+      $response->results = $track->getById($args['qsparts'][2]);
+    } else {
+        http_response_code(404);
+        $response->error = "This is not a valid endpoint.";
+    }
     break;
   
   default:

@@ -5,10 +5,6 @@ require "includes/Track.class.php";
 $args = $_REQUEST;
 $args['qsparts'] = explode('/', $args['qs']);
 
-// print '<pre>';
-// print_r($args);
-// exit;
-
 $response = new StdClass;
 
 switch ($args['qsparts'][1]) {
@@ -18,13 +14,24 @@ switch ($args['qsparts'][1]) {
     $limit = 50;
 
     $filters = [];
+    $allowed_filters = [
+      'genre',
+      'artist_name',
+      'track_id'
+    ];
 
-    if (isset($args['genre'])) {
-        $filters['genre'] = $args['genre'];
+    foreach ($_GET as $key => $value) {
+      if (!in_array($key, $allowed_filters) && $key !== 'page' && $key != 'qs' ) {
+        http_response_code(500);
+        $response->error = "$key is not a valid filter.";
+        break 2;
+      }
     }
 
-    if (isset($args['artist_name'])) {
-      $filters['artist_name'] = $args['artist_name'];
+    foreach ($allowed_filters as $allowed_filter) {
+      if (isset($args[$allowed_filter])) {
+        $filters[$allowed_filter] = $args[$allowed_filter];
+      }
     }
 
     $response->page = 1;

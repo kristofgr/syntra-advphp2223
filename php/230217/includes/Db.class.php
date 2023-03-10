@@ -26,9 +26,9 @@ Class Db {
       }
   }
 
-  public function executeQuery($sql, $filters = [], $fetch = PDO::FETCH_OBJ) {
+  public function executeQuery($sql, $fields = [], $fetch = PDO::FETCH_OBJ) {
     $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($filters);
+    $stmt->execute($fields);
     return $stmt->fetchAll($fetch);
   }
 }

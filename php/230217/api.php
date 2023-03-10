@@ -5,6 +5,7 @@ require "includes/Track.class.php";
 $args = $_REQUEST;
 $args['qsparts'] = explode('/', $args['qs']);
 
+
 $response = new StdClass;
 
 switch ($args['qsparts'][1]) {
@@ -60,13 +61,29 @@ switch ($args['qsparts'][1]) {
     break;
 
   case 'track': 
-    if (isset($args['qsparts'][2]) && !empty($args['qsparts'][2])) {
-      $db = new Db();
-      $track = new Track($db);
-      $response->results = $track->getById($args['qsparts'][2]);
-    } else {
-        http_response_code(404);
-        $response->error = "This is not a valid endpoint.";
+    switch ($_SERVER['REQUEST_METHOD']) {
+      case 'POST':
+        //post
+        $db = new Db();
+        $track = new Track($db);
+        $track->add($_POST);
+
+        $response->body = $_POST;
+        $response->message = "Track was saved.";
+        // $response->id = $id;
+
+        // $response->test = $body;
+        break;
+      default:
+        if (isset($args['qsparts'][2]) && !empty($args['qsparts'][2])) {
+          $db = new Db();
+          $track = new Track($db);
+          $response->results = $track->getById($args['qsparts'][2]);
+        } else {
+            http_response_code(404);
+            $response->error = "This is not a valid endpoint.";
+        }
+        break;
     }
     break;
   

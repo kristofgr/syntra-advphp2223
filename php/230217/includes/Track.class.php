@@ -28,6 +28,29 @@ Class Track {
     $sql = "SELECT * FROM 230217_tracks WHERE id=:id";
     return $this->db->executeQuery($sql, ['id' => $id]);
   }
+  
+
+  public function add($data) {
+
+
+    $keys = array_keys($data);
+    $cols = implode(', ', $keys);
+    
+    
+    $values = array_map(function($key) {
+      return ':'. $key;
+    }, $keys);
+    $values = implode(', ', $values);
+
+
+
+    $sql = "INSERT INTO 230217_tracks($cols) VALUES ($values)";
+
+    // print $sql;
+    // exit;
+
+    return $this->db->executeQuery($sql, $data);
+  }
 
 
   private function buildWhere($filters) {
